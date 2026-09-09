@@ -1,25 +1,42 @@
+x-app-environment: &app-environment
+  APP_ENV: local
+  APP_DEBUG: "true"
+  APP_KEY: base64:k+qzD4hO6WCU2/JPXpbI8GWcbm97rkB2YpLPmISGRH8=
+  DB_CONNECTION: mysql
+  DB_HOST: mysql
+  DB_PORT: 3306
+  DB_DATABASE: bivaco_exam
+  DB_USERNAME: bivaco
+  DB_PASSWORD: secret
+  CACHE_STORE: redis
+  CACHE_LIMITER: redis
+  QUEUE_CONNECTION: sync
+  SESSION_DRIVER: array
+  REDIS_HOST: redis
+  REDIS_PORT: 6379
+
 services:
   app:
+    image: bivaco-exam-app
     build:
       context: .
-    environment:
-      APP_ENV: local
-      APP_DEBUG: "true"
-      APP_KEY: base64:k+qzD4hO6WCU2/JPXpbI8GWcbm97rkB2YpLPmISGRH8=
-      DB_CONNECTION: mysql
-      DB_HOST: mysql
-      DB_PORT: 3306
-      DB_DATABASE: bivaco_exam
-      DB_USERNAME: bivaco
-      DB_PASSWORD: secret
-      CACHE_STORE: redis
-      CACHE_LIMITER: redis
-      QUEUE_CONNECTION: sync
-      SESSION_DRIVER: array
-      REDIS_HOST: redis
-      REDIS_PORT: 6379
+    environment: *app-environment
     ports:
       - "8000:8000"
+    depends_on:
+      mysql:
+        condition: service_healthy
+      redis:
+        condition: service_healthy
+
+  app-test:
+    image: bivaco-exam-app
+    environment:
+      <<: *app-environment
+      APP_ENV: testing
+      DB_DATABASE: bivaco_exam_testing
+      CACHE_PREFIX: bivaco-exam-testing
+    command: php artisan test
     depends_on:
       mysql:
         condition: service_healthy
