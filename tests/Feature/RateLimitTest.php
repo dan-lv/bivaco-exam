@@ -18,6 +18,10 @@ class RateLimitTest extends TestCase
         $secondUser = User::factory()->create();
         $this->clearLimiterFor($firstUser);
         $this->clearLimiterFor($secondUser);
+        $this->beforeApplicationDestroyed(function () use ($firstUser, $secondUser): void {
+            $this->clearLimiterFor($firstUser);
+            $this->clearLimiterFor($secondUser);
+        });
 
         Sanctum::actingAs($firstUser);
 
