@@ -5,6 +5,7 @@ namespace App\Actions;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Enums\ProductStatus;
+use App\Events\OrderCreated;
 use App\Exceptions\OrderConflictException;
 use App\Models\Inventory;
 use App\Models\Order;
@@ -117,6 +118,8 @@ class CreateOrderAction
                 'to_status' => OrderStatus::Pending,
                 'changed_by' => $user->id,
             ]);
+
+            OrderCreated::dispatch($order);
 
             return $order->load(['user', 'warehouse', 'items.product', 'payment']);
         }, 3);
