@@ -19,7 +19,8 @@ WORKDIR /var/www/html
 
 COPY . .
 
-RUN composer install --no-interaction --prefer-dist --optimize-autoloader
+RUN touch .env \
+    && composer install --no-interaction --prefer-dist --optimize-autoloader
 
 EXPOSE 8000
 
