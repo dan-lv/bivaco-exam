@@ -36,6 +36,9 @@ services:
       APP_ENV: testing
       DB_DATABASE: bivaco_exam_testing
       CACHE_PREFIX: bivaco-exam-testing
+      REDIS_DB: 15
+      REDIS_CACHE_DB: 14
+      REDIS_PREFIX: bivaco-exam-testing-
     command: php artisan test
     depends_on:
       mysql:
